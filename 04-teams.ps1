@@ -1,6 +1,6 @@
 ﻿#Connect-MicrosoftTeams
 
-$Outfile = ".\04-Output-teams.csv"
+$Outfile = ".\04-output-teams.csv"
 if (Test-Path $Outfile) 
 {
   Remove-Item $Outfile
