@@ -1,6 +1,6 @@
 ﻿#  connect-exchangeonline
 
-$Outfile = ".\01-output-user_mailboxes.csv"
+$Outfile = ".\02-output-user_mailboxes.csv"
 if (Test-Path $Outfile) 
 {
   Remove-Item $Outfile
