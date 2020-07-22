@@ -21,8 +21,8 @@ $content = "DistroGroupName,AcceptMessagesOnlyFrom,AcceptMessagesOnlyFromDLMembe
 Add-Content -Path $OutfileGroups $content
 
 
-$distrogroups=Get-DistributionGroup -ResultSize unlimited
 
+$distrogroups=Get-DistributionGroup -ResultSize unlimited
 $i=0
 ForEach ($distrogroup in $distrogroups){
     $i = $i+1
@@ -32,9 +32,33 @@ ForEach ($distrogroup in $distrogroups){
         If ($member.PrimarySMTPAddress -like $DomainName1 -or $member.PrimarySMTPAddress -like $DomainName2) {
             If ($MatchedGroup -ne $distrogroup) {
                 Write-Host "New group" -foregroundcolor Red
-                $content = $distrogroup.DisplayName+","+$distrogroup.AcceptMessagesOnlyFrom+","+$distrogroup.AcceptMessagesOnlyFromDLMembers+","+$distrogroup.AcceptMessagesOnlyFromSendersOrMembers+","+$distrogroup.AddressListMembership+","`
-                    +$distrogroup.Alias+","+$distrogroup.BypassModerationFromSendersOrMembers+","+$distrogroup.Description+","+$distrogroup.EmailAddresses+","+$distrogroup.EmailAddressPolicyEnabled+","+$distrogroup.GrantSendOnBehalfTo+","`
-                    +$distrogroup.GroupType+","+$distrogroup.HiddenFromAddressListsEnabled+","+$distrogroup.Identity+","+$distrogroup.IsDirSynced+","+$distrogroup.ManagedBy+","+$distrogroup.MemberJoinRestriction+","+$distrogroup.ModeratedBy+","`
+                $managedby = ""
+                ForEach ($person in $distrogroup.ManagedBy) {
+                    $managedby = $managedby+";"+$person
+                }
+                $moderationbypass = ""
+                ForEach ($person in $distrogroup.BypassModerationFromSendersOrMembers) {
+                    $person
+                    $moderationbypass = $moderationbypass+";"+$person
+                }
+                $moderatedby = ""
+                ForEach ($person in $distrogroup.ModeratedBy) {
+                    $person
+                    $moderatedby = $moderatedby+";"+$person
+                }
+                $acceptmessagesfrom = ""
+                ForEach ($person in $distrogroup.AcceptMessagesOnlyFrom) {
+                    $person
+                    $acceptmessagesfrom = $acceptmessagesfrom+";"+$person
+                }
+                $AcceptMessagesOnlyFromSendersOrMembers = ""
+                ForEach ($person in $distrogroup.AcceptMessagesOnlyFromSendersOrMembers) {
+                    $person
+                    $AcceptMessagesOnlyFromSendersOrMembers = $AcceptMessagesOnlyFromSendersOrMembers+";"+$person
+                }
+                $content = $distrogroup.DisplayName+","+$acceptmessagesfrom.TrimStart(";")+","+$distrogroup.AcceptMessagesOnlyFromDLMembers+","+$AcceptMessagesOnlyFromSendersOrMembers.TrimStart(";")+","+$distrogroup.AddressListMembership+","`
+                    +$distrogroup.Alias+","+$moderationbypass.TrimStart(";")+","+$distrogroup.Description+","+$distrogroup.EmailAddresses+","+$distrogroup.EmailAddressPolicyEnabled+","+$distrogroup.GrantSendOnBehalfTo+","`
+                    +$distrogroup.GroupType.Replace(","," ")+","+$distrogroup.HiddenFromAddressListsEnabled+","+$distrogroup.Identity+","+$distrogroup.IsDirSynced+","+$managedby.TrimStart(";")+","+$distrogroup.MemberJoinRestriction+","+$moderatedby.TrimStart(";")+","`
                     +$distrogroup.ModerationEnabled+","+$distrogroup.Name+","+$distrogroup.PrimarySmtpAddress
                 Add-Content -Path $OutFileGroups $content
             }          

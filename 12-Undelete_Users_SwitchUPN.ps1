@@ -22,3 +22,13 @@ ForEach ($user in $deletedusers) {
     $content = $user.UserPrincipalName+","+$newUPN
     Add-Content -Path $outfile $content
 }
+
+$recoveredusers = get-msoluser -DomainName $TempDomainName
+
+$j=0
+ForEach ($recovereduser in $recoveredusers) {
+$j++
+    Write-Host $j.ToString() $recovereduser.UserPrincipalName
+    $password = Set-MsolUserPassword -UserPrincipalName $recovereduser.UserPrincipalName -NewPassword "P#ZweVn^TX6Dg4kr"
+    Set-MsolUser  -UserPrincipalName $recovereduser.UserPrincipalName -BlockCredential $true
+}

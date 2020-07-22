@@ -8,7 +8,7 @@ if (Test-Path $Outfile)
 $content = "UserPrincipalName,Archive,ItemCount,TotalItemSize"
 Add-Content -Path $OutFile $content
 
-$scopedusers = import-csv -Path .\02-output-user-mailboxes.csv
+$scopedusers = import-csv -Path .\01-output-inscope_users.csv
 
 $i = 0
 ForEach ($user in $scopedusers){
